@@ -6,6 +6,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.os.Build
+import android.util.Log
 import androidx.core.app.NotificationCompat
 
 class NotificationReceiver : BroadcastReceiver() {
@@ -29,7 +30,23 @@ class NotificationReceiver : BroadcastReceiver() {
             .setSmallIcon(R.drawable.ic_message)  // Asegúrate de tener un ícono de notificación
             .build()
 
-        val manager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-            notificationManager.notify(1, notification)
+        notificationManager.notify(1, notification)
+
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val channelId = "default_channel"
+            val channelName = "Default Notifications"
+            val channelDescription = "Channel for important notifications"
+
+            val channel = NotificationChannel(channelId, channelName, NotificationManager.IMPORTANCE_HIGH).apply {
+                description = channelDescription
+            }
+
+            // Crear el canal si no existe
+            notificationManager.createNotificationChannel(channel)
+
+            Log.d("Notification", "Notification channel created")
+        }
+
     }
 }
